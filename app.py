@@ -5,13 +5,15 @@ import threading
 import time
 import sys
 import os
+import dotenv
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from seo_research import main
 from blog_generator import generate_blog_with_gemini
 
+FLASK_KEY=os.getenv('FLASK_KEY')
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-change-this' 
+app.secret_key = FLASK_KEY
 
 # Global variables to track research progress
 research_status = {
@@ -158,5 +160,5 @@ if __name__ == '__main__':
     os.makedirs('templates', exist_ok=True)
     
     print("Starting SEO Research Web Interface...")
-    print("Open your browser and go to: http://localhost:5000")
+    print("Open your browser and go to: http://localhost:5001")
     app.run(debug=True, host='0.0.0.0', port=5001)
