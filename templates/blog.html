@@ -1,0 +1,229 @@
+<!-- templates/blog.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Blog Post</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: #f8f9fa;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .source-info {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .blog-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            font-size: 16px;
+            line-height: 1.7;
+        }
+        
+        .blog-content h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.2em;
+        }
+        
+        .blog-content h2 {
+            color: #444;
+            margin: 30px 0 15px 0;
+            font-size: 1.6em;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        
+        .blog-content h3 {
+            color: #555;
+            margin: 25px 0 10px 0;
+            font-size: 1.3em;
+        }
+        
+        .blog-content p {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .blog-content ul, .blog-content ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        
+        .blog-content li {
+            margin-bottom: 8px;
+        }
+        
+        .blog-content blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            background: #f8f9ff;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .blog-content code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .blog-content pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .blog-content {
+                padding: 25px 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Generated Blog Post</h1>
+        <p>Generated on {{ blog_data.generated_at }}</p>
+    </div>
+    
+    <div class="container">
+        <div class="controls">
+            <a href="/" class="btn btn-primary">New Search</a>
+            <a href="/results" class="btn btn-primary">Back to Results</a>
+            <button class="btn btn-success" onclick="copyBlog()">Copy Blog Content</button>
+        </div>
+        
+        <div class="source-info">
+            <h3>Source Information</h3>
+            <p><strong>Original URL:</strong> {{ blog_data.source_result.url }}</p>
+            <p><strong>Title:</strong> {{ blog_data.source_result.title }}</p>
+            <p><strong>Keyword:</strong> {{ blog_data.source_result.keyword }}</p>
+            <p><strong>Rank:</strong> #{{ blog_data.source_result.rank }}</p>
+        </div>
+        
+        <div class="blog-content" id="blogContent">
+            {{ blog_data.blog_content | safe }}
+        </div>
+    </div>
+    
+    <script>
+        // Convert markdown to HTML for better display
+        const blogContent = document.getElementById('blogContent');
+        let content = blogContent.innerHTML;
+        
+        // Convert markdown headers
+        content = content.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+        content = content.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+        content = content.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+        
+        // Convert bold text
+        content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        // Convert italic text
+        content = content.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        
+        // Convert line breaks to paragraphs
+        content = content.replace(/\n\n/g, '</p><p>');
+        content = '<p>' + content + '</p>';
+        
+        // Clean up empty paragraphs
+        content = content.replace(/<p><\/p>/g, '');
+        content = content.replace(/<p>\s*<h/g, '<h');
+        content = content.replace(/h>\s*<\/p>/g, 'h>');
+        
+        blogContent.innerHTML = content;
+        
+        function copyBlog() {
+            const blogText = blogContent.innerText;
+            navigator.clipboard.writeText(blogText).then(() => {
+                alert('Blog content copied to clipboard!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = blogText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('Blog content copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>

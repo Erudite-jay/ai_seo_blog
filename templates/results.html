@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Results - {{ keyword }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .controls {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .result-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+
+        .rank-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            flex-shrink: 0;
+        }
+
+        .result-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .result-url {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            word-break: break-all;
+        }
+
+        .result-description {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .result-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .select-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .select-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: -10px;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>Research Results</h1>
+        <p>Keyword: <strong>{{ keyword }}</strong> | Found: <strong>{{ results|length }}</strong> results</p>
+    </div>
+
+    <div class="container">
+        <div class="controls">
+            <a href="/" class="btn btn-primary">New Search</a>
+            <span>Select a result below to generate a blog post</span>
+        </div>
+
+        <div class="results-grid">
+            {% for result in results %}
+            {% if result.status == 'success' %}
+            <div class="result-card" data-result="{{ loop.index0 }}">
+                <div class="result-header">
+                    <div class="rank-badge">Rank #{{ result.rank }}</div>
+                    <div class="result-status status-success">Success</div>
+                </div>
+
+                <div class="result-title">{{ result.title }}</div>
+                <div class="result-url">{{ result.url }}</div>
+                <div class="result-description">{{ result.description }}</div>
+
+                <button class="select-btn" onclick="selectResult({{ loop.index0 }})">
+                    Generate Blog from This Result
+                </button>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Blog Generation Modal -->
+    <div id="blogModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Generate Blog Post</h2>
+
+            <div id="selectedInfo"></div>
+
+            <!-- <div class="form-group">
+                <label for="apiKey">Gemini API Key:</label>
+                <input type="password" id="apiKey" placeholder="Enter your Gemini API key">
+                <small style="color: #666; font-size: 0.9em; margin-top: 5px; display: block;">
+                    Get your API key from: <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a>
+                </small>
+            </div> -->
+
+            <button class="btn btn-success" onclick="generateBlog()" style="width: 100%;">
+                Generate Blog Post
+            </button>
+
+            <div class="loading" id="loadingDiv">
+                <div class="spinner"></div>
+                <p>Generating blog post... This may take 30-60 seconds.</p>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        const results = {{ results| tojson | safe }}
+        let selectedResultIndex = -1;
+
+        const modal = document.getElementById('blogModal');
+        const closeBtn = document.querySelector('.close');
+
+        closeBtn.onclick = () => modal.style.display = 'none';
+        window.onclick = (event) => {
+            if (event.target === modal) modal.style.display = 'none';
+        };
+
+        function selectResult(index) {
+            selectedResultIndex = index;
+            const result = results[index];
+
+            // Highlight selected card
+            document.querySelectorAll('.result-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector(`[data-result="${index}"]`).classList.add('selected');
+
+            // Show modal with selected info
+            document.getElementById('selectedInfo').innerHTML = `
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <strong>Selected Result:</strong><br><br>
+
+            <label><strong>Title:</strong></label><br>
+            <input type="text" id="editTitle" value="${result.title}" 
+                    style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:5px;"><br>
+
+            <label><strong>URL:</strong></label><br>
+            <input type="text" id="editUrl" value="${result.url}" 
+                    style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:5px;" readonly><br>
+
+            <label><strong>Description:</strong></label><br>
+            <textarea id="editDescription" rows="3" 
+                        style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:5px;">${result.description}</textarea><br>
+
+            <label><strong>Keyword:</strong></label><br>
+            <input type="text" id="editKeyword" value="${result.keyword}" 
+                    style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:5px;"><br>
+            </div>
+            `;
+
+            modal.style.display = 'block';
+        }
+
+        async function generateBlog() {
+            const loadingDiv = document.getElementById('loadingDiv');
+            loadingDiv.style.display = 'block';
+
+            try {
+                const response = await fetch('/generate_blog', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        selected_result: results[selectedResultIndex],
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Redirect to blog view
+                    window.location.href = `/blog/${data.filename}`;
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Failed to generate blog: ' + error.message);
+            }
+
+            loadingDiv.style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>
