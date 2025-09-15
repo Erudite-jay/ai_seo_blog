@@ -58,7 +58,7 @@ def main(seed_keyword: str, num_results: int = 10):
         print("-" * 40)
         for item in all_results:
             if item['status'] == 'success':
-                print(f"\n🔸 Rank #{item['rank']}")
+                print(f"\n Rank #{item['rank']}")
                 print(f"   URL: {item['url']}")
                 print(f"   Title: {item['title']}")
                 print(f"   Description: {item['description'][:100]}...")
