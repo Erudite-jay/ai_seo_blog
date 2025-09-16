@@ -36,29 +36,40 @@ def generate_blog_with_gemini(selected_result: Dict[Any, Any]) -> str:
         - Page Title: {title}
         - Page Description: {description}
 
-        BLOG POST REQUIREMENTS:
-        1. Create an engaging, click-worthy title that includes the target keyword
-        2. Write a comprehensive blog post (1500-2500 words) that covers the topic thoroughly
-        3. Include proper headings (H1, H2, H3) for better structure
-        4. Naturally incorporate the target keyword throughout the content (keyword density: 1-2%)
-        5. Add relevant subheadings that users would search for
-        6. Include actionable tips, examples, or step-by-step guides where applicable
-        7. Write in a conversational, engaging tone that provides real value
-        8. Add a compelling introduction and conclusion
-        9. Include relevant internal linking opportunities (mention as [Link: topic])
-        10. Ensure the content is original and not a copy of the source material
+        BLOG POST REQUIREMENTS (Aligned with Google Search Quality Rater Guidelines):
+        1. Purpose & User Intent**: Make sure the blog fully satisfies the informational intent behind "{keyword}" and genuinely helps readers.
+        2. EEAT Principles:
+        - Show experience with practical examples, case studies, or step-by-step guidance.
+        - Demonstrate expertise with accurate, detailed explanations.
+        - Build authoritativeness by referencing credible sources ([Link: topic]) where needed.
+        - Establish trust by keeping information clear, honest, and reliable.
+        3. Page Quality:
+        - Ensure originality — do not copy or spin the source material.
+        - Provide depth, effort, and a conversational but professional tone.
+        - Make the article comprehensive enough to be considered a reference piece.
+        4. Structure & Engagement:
+        - Write an engaging, click-worthy title using the target keyword.
+        - Draft a long-form article (1500–2500 words).
+        - Use structured headings (H1, H2, H3) for easy navigation.
+        - Naturally incorporate the keyword with safe density (1–2%).
+        - Add relevant subheadings that match common search queries.
+        - Include actionable tips, examples, or step-by-step breakdowns.
+        - Open with a compelling introduction and close with a strong conclusion.
+        - Add an optional FAQ section covering related queries.
+        5. User Value:
+        - Address real user pain points and provide practical solutions.
+        - Suggest relevant internal linking opportunities as [Link: topic].
+        - Keep the content factually correct, useful, and engaging.
 
         CONTENT STRUCTURE:
         - Compelling Title (H1)
-        - Engaging Introduction (2-3 paragraphs)
+        - Introduction (2–3 engaging paragraphs)
         - Main Content with Multiple Sections (H2s and H3s)
         - Practical Tips/Examples
         - Conclusion with Call-to-Action
         - FAQ Section (optional but recommended)
 
-        Please create a blog post that would rank well for the keyword "{keyword}" while providing genuine value to readers. Make it comprehensive enough to be considered a pillar content piece.
-
-        Format the output in clean Markdown format.
+        Please create a blog post that would rank well for "{keyword}" while providing trustworthy, comprehensive, and user-focused content. Format the output in clean Markdown.
         """
         
         print(f"Generating blog content for: {keyword}")
