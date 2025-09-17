@@ -174,47 +174,20 @@
             <p><strong>Original URL:</strong> {{ blog_data.source_result.url }}</p>
             <p><strong>Title:</strong> {{ blog_data.source_result.title }}</p>
             <p><strong>Keyword:</strong> {{ blog_data.source_result.keyword }}</p>
-            <p><strong>Rank:</strong> #{{ blog_data.source_result.rank }}</p>
         </div>
         
+        <!-- Direct HTML injection -->
         <div class="blog-content" id="blogContent">
-            {{ blog_data.blog_content | safe }}
+            {{ blog_data.blog_content | replace("```html","") | replace("```","") | safe }}
         </div>
     </div>
     
     <script>
-        // Convert markdown to HTML for better display
-        const blogContent = document.getElementById('blogContent');
-        let content = blogContent.innerHTML;
-        
-        // Convert markdown headers
-        content = content.replace(/^# (.*$)/gim, '<h1>$1</h1>');
-        content = content.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-        content = content.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-        
-        // Convert bold text
-        content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        
-        // Convert italic text
-        content = content.replace(/\*(.*?)\*/g, '<em>$1</em>');
-        
-        // Convert line breaks to paragraphs
-        content = content.replace(/\n\n/g, '</p><p>');
-        content = '<p>' + content + '</p>';
-        
-        // Clean up empty paragraphs
-        content = content.replace(/<p><\/p>/g, '');
-        content = content.replace(/<p>\s*<h/g, '<h');
-        content = content.replace(/h>\s*<\/p>/g, 'h>');
-        
-        blogContent.innerHTML = content;
-        
         function copyBlog() {
-            const blogText = blogContent.innerText;
+            const blogText = document.getElementById('blogContent').innerText;
             navigator.clipboard.writeText(blogText).then(() => {
                 alert('Blog content copied to clipboard!');
             }).catch(() => {
-                // Fallback for older browsers
                 const textArea = document.createElement('textarea');
                 textArea.value = blogText;
                 document.body.appendChild(textArea);
