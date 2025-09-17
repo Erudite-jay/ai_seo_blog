@@ -88,6 +88,81 @@ def generate_blog_with_gemini(selected_result: Dict[Any, Any]) -> str:
             3.End with actionable takeaways or thought-provoking insights.
             4.Embed real-world examples or hypothetical SMB scenarios for context.
 
+
+        CONTENT GUIDELINES DETAILS:
+        1. Content Topic Relevance and Audience
+
+            Focus on custom AI solutions for SMBs: practical AI adoption strategies, case studies, efficiency gains, cost benefits, AI trends impacting SMBs.
+            Include industry best practices and broader AI adoption themes without alienating non-SMB readers, use inclusive language.
+            Ensure content answers common SMB questions, industry pain points, and emerging opportunities with AI.
+
+        2. Tone of Voice & Style
+
+            Write in the second person to engage your reader directly. Use “you” and “your” throughout the blog to create a personal and immersive experience for the reader. Writing in second person places your audience at the center of the content, speaking directly to their needs, challenges, and goals. This approach makes your message feel like a one-on-one conversation rather than a distant lecture.
+            Emulate warm, empowering, and conversational tone that reflects a human writer’s empathy and authority.
+            Use simple, jargon-free language without assuming deep technical knowledge to engage diverse SMB readers.
+            Incorporate storytelling: real-world examples, business narratives, customer success tales.
+            Vary sentence structure to avoid robotic repetition; inject subtle personality and emotional cues (e.g., excitement, curiosity).
+
+        3. Content Structure & Flow
+
+            Use engaging headings and subheadings for easy scanning.
+            Start with a hook or relatable pain point; conclude with a clear takeaway or actionable insight.
+            Include mixed content types: statistics, anecdotes, FAQs, quotes, and analogies.
+            Provide incremental learning by addressing basic to moderate complexity concepts gradually.
+
+        4. Humanizing AI Content Techniques
+
+            Edit AI drafts by rewriting phrases and sentences to sound natural and spontaneous.
+            Add personal touches: use metaphors, rhetorical questions, and conversational asides.
+            Avoid keyword stuffing; prioritize reader value over SEO tricks.
+            Inject subtle humor or light emotional resonance when appropriate.
+
+        5. Fact-Checking & Credibility
+
+        Verify all facts, stats, data points with reputable sources before publishing.
+        Attribute sources and include links where possible.
+        Demonstrate experience and expertise by referencing Consultadd’s 13+ years, 150+ engineers, and proven case studies contextually in blogs.
+
+        6. SEO and Discoverability
+
+        Align topics and subtopics with keyword research relevant to AI solutions for SMBs.
+        Use meaningful, descriptive headings including primary keywords naturally.
+        Incorporate internal links to Consultadd’s landing pages, service descriptions, and related posts to guide readers down the funnel.
+        Write compelling meta descriptions and engaging first 100 words to improve search ranking.
+
+        7. Keyword Usage Strategy
+
+        Use Keywords Thoughtfully and Naturally for SEO and Readability
+
+            Research and prioritize relevant keywords aligned with Consultadd’s focus on custom AI solutions for SMBs, such as "custom AI solutions for small business," "AI adoption SMB," "rapid AI deployment," etc.
+            Incorporate primary and secondary keywords strategically in key blog locations:
+            Titles and subheadings
+            Opening paragraph and conclusion
+            Naturally spread in the body content without overuse
+            Avoid keyword stuffing which harms readability and search rankings. Instead, use keywords in a way that sounds seamless and conversational.
+            Use variations and synonyms of your keywords to capture a wider range of search queries and enrich the content. For example, use both "custom AI" and "tailored AI solutions."
+            Maintain the human tone by prioritizing meaningful, helpful sentences over forced keyword placement. If a keyword disrupts the flow, rephrase the sentence or choose a related term.
+            Leverage internal linking with keyword-rich anchor text to relevant Consultadd pages, enhancing SEO and guiding readers deeper into the content ecosystem.
+            Focus on user intent: keywords should align with what your audience is genuinely searching for and reflect answers to their key challenges or questions, ensuring the content remains practical and audience-focused.
+
+        8. Ethical and Transparent AI Use
+
+            Be transparent internally about using AI tools for drafting but ensure human review and editing preserves authenticity.
+            Avoid presenting AI as expert or authority; always highlight human oversight and expertise.
+            Focus on value-driven, original insights, not generic AI regurgitation.
+
+        ---
+
+        Examples for Drafting Blog Topics 
+        "Why Tailored AI, Not Off-the-Shelf, Matters for SMBs"
+        "Stepwise Guide to Adopting AI for Small Businesses"
+        "How Custom AI Solutions Boost SMB Productivity: Real Use Cases"
+        "Breaking Down AI Jargon: What SMBs Really Need to Know"
+        "AI Deployment in Weeks: How SMBs Can Stay Agile & Competitive"
+        "Customer Success Story: AI-Powered Growth for a Local Retailer"
+        "The Future of SMBs with Custom AI: Trends & Predictions for 2025"
+
         Please create a blog post that would rank well for "{keyword}" while providing trustworthy, comprehensive, and user-focused content. 
         Make sure to return:
             - The value of blog_content must contain valid HTML using <h1>, <h2>, <h3>, <p>, <ul>, <ol>, <blockquote>, <code>,<href> and <pre>.
