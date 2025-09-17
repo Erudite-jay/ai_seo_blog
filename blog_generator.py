@@ -71,7 +71,7 @@ def generate_blog_with_gemini(selected_result: Dict[Any, Any]) -> str:
 
         Please create a blog post that would rank well for "{keyword}" while providing trustworthy, comprehensive, and user-focused content. 
         Format the output directly in clean HTML with <h1>, <h2>, <h3>, <p>, <ul>, <ol>, <blockquote>, <code>, and <pre> tags where appropriate. 
-        Do not wrap the content in <html>, <head>, or <body> — only return the inner blog content.
+        Make sure: Do not wrap the content in <html>, <head>, or <body> — only return the inner blog content.
         """
         
         print(f"Generating blog content for: {keyword}")
