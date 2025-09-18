@@ -1,12 +1,13 @@
 import google.generativeai as genai
 import time
-from typing import Dict, Any
+from typing import Dict, Any, List
 from dotenv import load_dotenv
 import os
+import csv
+
 load_dotenv()
 
-
-GEMINI_API_KEY=os.getenv("GEMINI_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 def configure_gemini(api_key: str):
     """Configure Gemini API with the provided key."""
@@ -26,150 +27,11 @@ def generate_blog_with_gemini(selected_result: Dict[Any, Any]) -> str:
         description = selected_result.get('description', '')
         keyword = selected_result.get('keyword', '')
         
+        # Determine if we should include Consultadd
+        include_consultadd = should_include_consultadd()
         
         # Create comprehensive prompt for blog generation
-        prompt = f"""
-        You are an expert content creator tasked with generating humanized, engaging blog content for Consultadd,
-        a custom AI solutions company focused on tailored AI technologies.
-        Your goal is to produce original, value-driven, and reader-focused blogs that feel like they are written by a thoughtful human expert, not an AI.
-
-        RESEARCH DATA:
-        - Target Keyword: {keyword}
-        - Source URL: {url}
-        - Page Title: {title}
-        - Page Description: {description}
-
-        BLOG POST REQUIREMENTS
-        1. Purpose & User Intent: Make sure the blog fully satisfies the informational intent behind "{keyword}" and genuinely helps readers.
-
-        CONTENT STRUCTURE:
-        - Compelling Title (H1)
-        - Introduction (2–3 engaging paragraphs)
-        - Main Content with Multiple Sections (H2s and H3s)
-        - Practical Tips/Examples
-        - Conclusion with Call-to-Action
-        - FAQ Section (optional but recommended)
-
-        Page Quality:
-        - Ensure originality — do not copy or spin the source material.
-        Engagement:
-        - Draft a long-form article (1500–2500 words).
-
-        CONTENT GUIDELINES:
-        Content Scope & Audience:
-            1.Focus on topics relevant to SMBs exploring or adopting custom AI solutions, such as use cases, benefits, challenges, and best practices.
-            2.Ensure the language and examples are inclusive and relatable even for readers outside SMBs, to avoid alienation.
-            3.Topics should be research-backed, insightful, and aligned with Consultadd’s expertise.
-        Tone & Style
-            1.Write in the second person, directly addressing the reader as "you" and "your" to create a personal connection.
-            2.Use a warm, empowering, conversational tone with simple, jargon-free language accessible to diverse readers.
-            3.Incorporate storytelling elements such as customer anecdotes, metaphors, and subtle humor when appropriate.
-            4.Vary sentence structure to keep the narrative fluid and engaging.
-            5.Prioritize clarity and empathy, anticipating and answering reader questions and concerns.
-        Keyword & SEO Guidelines
-            1.Include Research Data naturally in titles, headings, and throughout the text without keyword stuffing.
-            2.Use synonyms and related terms to enrich content and match varied search intents.
-            3.Incorporate internal links to Consultadd’s(consultadd.com) key pages contextually.
-            4.Write compelling meta titles and descriptions that summarize key blog points.
-        Guardrails for Mentioning Consultadd
-            1.When referring to Consultadd (consultadd.com), emphasize it as a trusted, experienced partner with over 13 years of industry presence, 150+ engineers, and 800+ satisfied clients without overt marketing.
-            2.When mentioning other players, keep comparisons respectful and factual, without negative language.
-            3.Focus on Consultadd’s unique value in tailoring AI solutions rapidly and accessibly, fitting the client’s pace and needs.
-        Humanization Techniques
-            1.Rewrite AI-generated drafts by replacing stiff or repetitive phrases with natural, idiomatic expressions.
-            2.Add rhetorical questions to engage the reader (“Have you ever wondered…?”) and invite reflection.
-            3.Use analogies and examples to clarify complex AI concepts simply.
-            4.Include short personal asides or empathetic comments (“We understand that adopting AI can feel daunting…”).
-            5.Avoid robotic or formulaic language and passive voice; prefer active, direct sentences.
-            6.Edit to include slight variation in sentence length and transitions to improve flow.
-        Structure & Formatting
-            1.Open with a relatable hook addressing a common challenge or curiosity.
-            2.Use clear headings/subheadings with keywords for easy navigation.
-            3.End with actionable takeaways or thought-provoking insights.
-            4.Embed real-world examples or hypothetical SMB scenarios for context.
-
-
-        CONTENT GUIDELINES DETAILS:
-        1. Content Topic Relevance and Audience
-
-            Focus on custom AI solutions for SMBs: practical AI adoption strategies, case studies, efficiency gains, cost benefits, AI trends impacting SMBs.
-            Include industry best practices and broader AI adoption themes without alienating non-SMB readers, use inclusive language.
-            Ensure content answers common SMB questions, industry pain points, and emerging opportunities with AI.
-
-        2. Tone of Voice & Style
-
-            Write in the second person to engage your reader directly. Use “you” and “your” throughout the blog to create a personal and immersive experience for the reader. Writing in second person places your audience at the center of the content, speaking directly to their needs, challenges, and goals. This approach makes your message feel like a one-on-one conversation rather than a distant lecture.
-            Emulate warm, empowering, and conversational tone that reflects a human writer’s empathy and authority.
-            Use simple, jargon-free language without assuming deep technical knowledge to engage diverse SMB readers.
-            Incorporate storytelling: real-world examples, business narratives, customer success tales.
-            Vary sentence structure to avoid robotic repetition; inject subtle personality and emotional cues (e.g., excitement, curiosity).
-
-        3. Content Structure & Flow
-
-            Use engaging headings and subheadings for easy scanning.
-            Start with a hook or relatable pain point; conclude with a clear takeaway or actionable insight.
-            Include mixed content types: statistics, anecdotes, FAQs, quotes, and analogies.
-            Provide incremental learning by addressing basic to moderate complexity concepts gradually.
-
-        4. Humanizing AI Content Techniques
-
-            Edit AI drafts by rewriting phrases and sentences to sound natural and spontaneous.
-            Add personal touches: use metaphors, rhetorical questions, and conversational asides.
-            Avoid keyword stuffing; prioritize reader value over SEO tricks.
-            Inject subtle humor or light emotional resonance when appropriate.
-
-        5. Fact-Checking & Credibility
-
-        Verify all facts, stats, data points with reputable sources before publishing.
-        Attribute sources and include links where possible.
-        Demonstrate experience and expertise by referencing Consultadd’s 13+ years, 150+ engineers, and proven case studies contextually in blogs.
-
-        6. SEO and Discoverability
-
-        Align topics and subtopics with keyword research relevant to AI solutions for SMBs.
-        Use meaningful, descriptive headings including primary keywords naturally.
-        Incorporate internal links to Consultadd’s landing pages, service descriptions, and related posts to guide readers down the funnel.
-        Write compelling meta descriptions and engaging first 100 words to improve search ranking.
-
-        7. Keyword Usage Strategy
-
-        Use Keywords Thoughtfully and Naturally for SEO and Readability
-
-            Research and prioritize relevant keywords aligned with Consultadd’s focus on custom AI solutions for SMBs, such as "custom AI solutions for small business," "AI adoption SMB," "rapid AI deployment," etc.
-            Incorporate primary and secondary keywords strategically in key blog locations:
-            Titles and subheadings
-            Opening paragraph and conclusion
-            Naturally spread in the body content without overuse
-            Avoid keyword stuffing which harms readability and search rankings. Instead, use keywords in a way that sounds seamless and conversational.
-            Use variations and synonyms of your keywords to capture a wider range of search queries and enrich the content. For example, use both "custom AI" and "tailored AI solutions."
-            Maintain the human tone by prioritizing meaningful, helpful sentences over forced keyword placement. If a keyword disrupts the flow, rephrase the sentence or choose a related term.
-            Leverage internal linking with keyword-rich anchor text to relevant Consultadd pages, enhancing SEO and guiding readers deeper into the content ecosystem.
-            Focus on user intent: keywords should align with what your audience is genuinely searching for and reflect answers to their key challenges or questions, ensuring the content remains practical and audience-focused.
-
-        8. Ethical and Transparent AI Use
-
-            Be transparent internally about using AI tools for drafting but ensure human review and editing preserves authenticity.
-            Avoid presenting AI as expert or authority; always highlight human oversight and expertise.
-            Focus on value-driven, original insights, not generic AI regurgitation.
-
-        ---
-
-        Examples for Drafting Blog Topics 
-        "Why Tailored AI, Not Off-the-Shelf, Matters for SMBs"
-        "Stepwise Guide to Adopting AI for Small Businesses"
-        "How Custom AI Solutions Boost SMB Productivity: Real Use Cases"
-        "Breaking Down AI Jargon: What SMBs Really Need to Know"
-        "AI Deployment in Weeks: How SMBs Can Stay Agile & Competitive"
-        "Customer Success Story: AI-Powered Growth for a Local Retailer"
-        "The Future of SMBs with Custom AI: Trends & Predictions for 2025"
-
-        Please create a blog post that would rank well for "{keyword}" while providing trustworthy, comprehensive, and user-focused content. 
-        Make sure to return:
-            - The value of blog_content must contain valid HTML using <h1>, <h2>, <h3>, <p>, <ul>, <ol>, <blockquote>, <code>,<href> and <pre>.
-            - Do NOT include ``` fences.
-            - Do NOT include <!DOCTYPE>, <html>, <head>, or <body>.
-            - Do NOT include Source URL or Domain in blog content.
-        """
+        prompt = get_blog_prompt(include_consultadd, keyword, url, title, description)
         
         print(f"Generating blog content for: {keyword}")
         print("This may take 30-60 seconds...")
@@ -187,6 +49,8 @@ def generate_blog_with_gemini(selected_result: Dict[Any, Any]) -> str:
         
         if response.text:
             print("Blog generated successfully!")
+            # Log the decision
+            log_decision(blog_counter, keyword, include_consultadd)
             return response.text
         else:
             raise Exception("No content generated by Gemini")
@@ -194,3 +58,477 @@ def generate_blog_with_gemini(selected_result: Dict[Any, Any]) -> str:
     except Exception as e:
         error_msg = f"Error generating blog with Gemini: {str(e)}"
         print(f"{error_msg}")
+        return error_msg
+
+def get_competitor_context(num_competitors: int = 2) -> str:
+    """
+    Generate a list of competitors to mention alongside Consultadd for educational context.
+    
+    Args:
+        num_competitors (int): Number of competitors to include (default: 2)
+        
+    Returns:
+        str: Formatted competitor list
+    """
+    import random
+    
+    # Mix competitors from different categories for variety
+    all_competitors = MAJOR_COMPETITORS + CONSULTING_COMPETITORS + TECH_COMPETITORS
+    
+    # Randomly select competitors but ensure variety
+    selected = random.sample(all_competitors, min(num_competitors, len(all_competitors)))
+    
+    if len(selected) == 1:
+        return selected[0]
+    elif len(selected) == 2:
+        return f"{selected[0]} and {selected[1]}"
+    else:
+        return f"{', '.join(selected[:-1])}, and {selected[-1]}"
+
+def get_blog_prompt(include_consultadd, keyword, url, title, description):
+    # Get competitor context for educational framing
+    competitors = get_competitor_context(2) if include_consultadd else ""
+    
+    if include_consultadd:
+        return f"""
+            You are an expert content creator tasked with generating humanised, engaging blog content for Consultadd,
+            a custom AI solutions company focused on tailored AI technologies.
+            Your goal is to produce original, value-driven, and reader-focused blogs that feel like they are written by a thoughtful human expert, not an AI.
+            
+            IMPORTANT COMPETITOR CONTEXT:
+            When mentioning Consultadd, also include these competitors for educational balance: {competitors}
+            This maintains educational intent and avoids appearing overly promotional.
+            
+            RESEARCH DATA:
+            - Target Keyword: {keyword}
+            - Source URL: {url}
+            - Page Title: {title}
+            - Page Description: {description}
+            BLOG POST REQUIREMENTS
+            1. Purpose & User Intent: Make sure the blog fully satisfies the informational intent behind "{keyword}","{title}"and genuinely helps readers.
+            CONTENT STRUCTURE:
+            - Compelling Title (H1)
+            - TL;DR Section (immediately after Title (H1) - see TL;DR guidelines below)
+            - Introduction (2–3 engaging paragraphs)
+            - Main Content with Multiple Sections (H2s and H3s)
+            - Practical Tips/Examples
+            - Conclusion with Call-to-Action
+            - FAQ Section (optional but recommended)
+            Page Quality:
+            - Ensure originality — do not copy or spin the source material.
+            Engagement:
+            - Draft a long-form article (1500–2500 words).
+            CONTENT GUIDELINES:
+            Content Scope & Audience:
+            - Focus on topics relevant to SMBs exploring or adopting custom AI solutions, such as use cases, benefits, challenges, and best practices.
+            - Ensure the language and examples are inclusive and relatable even for readers outside SMBs.
+            - Topics should be research-backed, insightful.
+            Tone & Style:
+            - Write in the second person, addressing the reader as "you" amd "your" to create a personal connection.
+            - Use a warm, empowering, conversational tone,jargon-free language accessible to diverse readers.
+            - Incorporate storytelling, anecdotes, metaphors, and subtle humour.
+            - Prioritise clarity and empathy, answering reader questions and concerns.
+            Keyword & SEO Guidelines:
+            - Naturally use research data in titles, headings, and body.
+            - Use synonyms and related terms.
+            - If required,include ONE contextual mention of consultadd.com along with competitors.
+            - After the single Consultadd mention, use generic terms like "AI service providers" or "custom solution companies" and more
+            Guardrails for Mentioning Consultadd:
+            -- If required according to the content than only mention the Consultadd.
+            -- CRITICAL: Mention Consultadd ONLY ONCE in the entire blog post alongside competitors and Naturally and strategically place the brand once wherever necessary..
+            - When referring to Consultadd (consultadd.com), emphasise it as a trusted, experienced partner.
+            - IMPORTANT: The single mention of Consultadd must always include 2-3 competitors in the same context to maintain educational intent and avoid appearing promotional.
+            - Competitors to mention include: IBM Watson, Microsoft Azure AI, Google Cloud AI, Accenture AI, Deloitte AI, Capgemini AI, Infosys AI, TCS AI solutions, or other relevant AI service providers.
+            - Present the single comparison as educational information: "Companies like Consultadd, {competitors} offer..." or "When evaluating providers such as Consultadd, {competitors}... and more"
+            - Keep all comparisons respectful, factual, and balanced.
+            - Focus on Consultadd's unique value (rapid customization, SMB focus) while acknowledging competitors' strengths.
+            - Frame mentions as "options to consider" rather than direct recommendations.
+            - After this single mention, refer only to "AI service providers" or "custom AI solution companies" generically.
+            - Do NOT mention Consultadd again anywhere else in the blog - not in conclusion, call-to-action, or any other section.
+            Humanization Techniques:
+            - Rewrite stiff phrases into idiomatic expressions.
+            - Add rhetorical questions and analogies.
+            - Include empathetic comments like "We understand…".
+            - Use analogies and examples to clarify complex AI concepts simply.
+            - Include short personal asides or empathetic comments (“We understand that adopting AI can feel daunting…”).
+            - Avoid robotic or formulaic language and passive voice; prefer active, direct sentences.
+            - Edit to include slight variation in sentence length and transitions to improve flow
+            Structure & Formatting:
+            - Start with a relatable hook.
+            - Use headings/subheadings with keywords.
+            - End with actionable takeaways.
+            - Embed real-world SMB examples.
+            SEO, Fact-Checking, Ethical Use:
+            - Verify facts and cite sources.
+            - Highlight Consultadd's proven case studies contextually.
+            - Avoid keyword stuffing; prioritise reader value.
+            - Ensure transparency with AI use.
+            - Be transparent internally about using AI tools for drafting but ensure human review and editing preserves authenticity.
+            - Avoid presenting AI as expert or authority; always highlight human oversight and expertise.
+            - Focus on value-driven, original insights, not generic AI regurgitation.
+            - Write compelling meta descriptions and engaging first 100 words to improve search ranking
+            Keyword Usage Strategy:
+            - Use Keywords Thoughtfully and Naturally for SEO and Readability
+            - Use variations and synonyms of your keywords to capture a wider range of search queries and enrich the content. For example, use both "custom AI" and "tailored AI solutions."
+            - Focus on user intent: keywords should align with what your audience is genuinely searching for and reflect answers to their key challenges or questions, ensuring the content remains practical and audience-focused.
+            TL;DR GUIDELINES:
+            1. Keep it Short & Sweet: Aim for 3-6 bullet points, making it concise and direct.
+            2. Focus on Reader Value: Answer the "what's in it for me?" question by highlighting the main points and benefits.
+            3. Use Keywords Naturally: Weave in your focus keyword "{keyword}" to help search engines understand the page's topic.
+            4. Place it Strategically: Put the TL;DR immediately after the introduction for immediate impact.
+            5. Write it Last Conceptually: Ensure your TL;DR accurately reflects the essence of your content.
+            6. Format Options: Use either bullet points or a short paragraph format.
+            7. No Company Mentions: Keep TL;DR generic and educational - do not mention Consultadd or competitors here.
+            
+
+            EXAMPLES:
+            - "Why Tailored AI, Not Off-the-Shelf, Matters for SMBs"
+            - "Stepwise Guide to Adopting AI for Small Businesses"
+            - "How Custom AI Solutions Boost SMB Productivity: Real Use Cases"
+            
+            COMPETITOR MENTION EXAMPLES:
+            - "When choosing an AI partner, consider providers like Consultadd, {competitors}, each offering different strengths..."
+            - "Solutions from companies such as Consultadd, {competitors} can help, but evaluate based on your specific needs..."
+            - "Whether working with Consultadd, {competitors}, ensure your chosen provider understands SMB challenges..."
+
+            GENERIC REFERENCES (use after the single mention):
+            - "Your chosen AI provider should..."
+            - "When working with AI solution companies..."
+            - "Custom AI service providers typically..."
+            - "Professional AI implementation partners can..."
+
+              Make sure to return:
+            - The value of blog_content must contain valid HTML using <h1>, <h2>, <h3>, <p>, <ul>, <ol>, <blockquote>, <code>,<href> and <pre>.
+            - Do NOT include ``` fences.
+            - Do NOT include <!DOCTYPE>, <html>, <head>, or <body>.
+            - Do NOT include Source URL or Domain in blog content.
+            """
+    else:
+        return f"""
+            You are an expert content creator tasked with generating humanised, engaging blog content.
+            Your goal is to produce original, value-driven, and reader-focused blogs that feel like they are written by a thoughtful human expert, not an AI.
+            RESEARCH DATA:
+            - Target Keyword: {keyword}
+            - Source URL: {url}
+            - Page Title: {title}
+            - Page Description: {description}
+            BLOG POST REQUIREMENTS
+            1. Purpose & User Intent: Make sure the blog fully satisfies the informational intent behind "{keyword}","{title}" and genuinely helps readers.
+            CONTENT STRUCTURE:
+            - Compelling Title (H1)
+            - TL;DR Section (immediately after Title (H1) - see TL;DR guidelines below)
+            - Introduction (2–3 engaging paragraphs)
+            - Main Content with Multiple Sections (H2s and H3s)
+            - Practical Tips/Examples
+            - Conclusion (without company promotion)
+            - FAQ Section (optional but recommended)
+            Page Quality:
+            - Ensure originality — do not copy or spin the source material.
+            Engagement:
+            - Draft a long-form article (1500–2500 words).
+            CONTENT GUIDELINES:
+            Content Scope & Audience:
+            - Focus on topics relevant to SMBs exploring or adopting custom AI solutions, such as use cases, benefits, challenges, and best practices.
+            - Ensure the language and examples are inclusive and relatable even for readers outside SMBs.
+            - Topics should be research-backed, insightful, and practical.
+            Tone & Style:
+            - Write in the second person, addressing the reader as "you" amd "your" to create a personal connection.
+            - Use a warm, empowering, conversational tone,jargon-free language accessible to diverse readers.
+            - Incorporate storytelling, anecdotes, metaphors, and subtle humour.
+            - Prioritise clarity and empathy, answering reader questions and concerns.
+            Keyword & SEO Guidelines:
+            - Naturally use research data in titles, headings, and body.
+            - Use synonyms and related terms.
+            - Do NOT mention Consultadd or link to any company.
+            - Write compelling meta titles and descriptions.
+            Humanization Techniques:
+            - Rewrite stiff phrases into idiomatic expressions.
+            - Add rhetorical questions and analogies.
+            - Include empathetic comments like "We understand…".
+            - Use analogies and examples to clarify complex AI concepts simply.
+            - Include short personal asides or empathetic comments (“We understand that adopting AI can feel daunting…”).
+            - Avoid robotic or formulaic language and passive voice; prefer active, direct sentences.
+            - Edit to include slight variation in sentence length and transitions to improve flow
+            Structure & Formatting:
+            - Start with a relatable hook.
+            - Use headings/subheadings with keywords.
+            - End with actionable takeaways.
+            - Embed real-world SMB examples.
+            SEO, Fact-Checking, Ethical Use:
+            - Verify facts and cite sources.
+            - Highlight Consultadd's proven case studies contextually.
+            - Avoid keyword stuffing; prioritise reader value.
+            - Ensure transparency with AI use.
+            - Be transparent internally about using AI tools for drafting but ensure human review and editing preserves authenticity.
+            - Avoid presenting AI as expert or authority; always highlight human oversight and expertise.
+            - Focus on value-driven, original insights, not generic AI regurgitation.
+            - Write compelling meta descriptions and engaging first 100 words to improve search ranking
+            Keyword Usage Strategy:
+            - Use Keywords Thoughtfully and Naturally for SEO and Readability
+            - Use variations and synonyms of your keywords to capture a wider range of search queries and enrich the content. For example, use both "custom AI" and "tailored AI solutions."
+            - Focus on user intent: keywords should align with what your audience is genuinely searching for and reflect answers to their key challenges or questions, ensuring the content remains practical and audience-focused.
+            TL;DR GUIDELINES:
+            1. Keep it Short & Sweet: Aim for 3-6 bullet points, making it concise and direct.
+            2. Focus on Reader Value: Answer the "what's in it for me?" question by highlighting the main points and benefits.
+            3. Use Keywords Naturally: Weave in your focus keyword "{keyword}" to help search engines understand the page's topic.
+            4. Place it Strategically: Put the TL;DR immediately after the introduction for immediate impact.
+            5. Write it Last Conceptually: Ensure your TL;DR accurately reflects the essence of your content.
+            6. Format Options: Use either bullet points or a short paragraph format.
+            7. No Company Mentions: Keep TL;DR generic and educational - do not mention Consultadd or competitors here.
+            
+
+            EXAMPLES:
+            - "Why Tailored AI, Not Off-the-Shelf, Matters for SMBs"
+            - "Stepwise Guide to Adopting AI for Small Businesses"
+            - "Breaking Down AI Jargon: What SMBs Really Need to Know"
+            - "AI Deployment in Weeks: How SMBs Can Stay Agile & Competitive"
+            - "Customer Success Story: AI-Powered Growth for a Local Retailer"
+            - "The Future of SMBs with Custom AI: Trends & Predictions for 2025"
+
+              Make sure to return:
+            - The value of blog_content must contain valid HTML using <h1>, <h2>, <h3>, <p>, <ul>, <ol>, <blockquote>, <code>,<href> and <pre>.
+            - Do NOT include ``` fences.
+            - Do NOT include <!DOCTYPE>, <html>, <head>, or <body>.
+            - Do NOT include Source URL or Domain in blog content.
+            """
+
+# --- Config ---
+CONSULTADD_RATIO = 1  # blogs with Consultadd per batch
+TOTAL_IN_BATCH = 2   # total blogs per batch before reset
+LOG_FILE = "blog_log.csv"
+
+# Competitor lists for educational context
+MAJOR_COMPETITORS = [
+    "IBM Watson", "Microsoft Azure AI", "Google Cloud AI", 
+    "Amazon Web Services AI", "Salesforce Einstein"
+]
+
+CONSULTING_COMPETITORS = [
+    "Accenture AI", "Deloitte AI", "Capgemini AI", 
+    "Infosys AI", "TCS AI solutions", "Cognizant AI"
+]
+
+TECH_COMPETITORS = [
+    "Palantir", "DataRobot", "H2O.ai", 
+    "C3.ai", "Databricks", "Snowflake AI"
+]
+# --- State ---
+blog_counter = 0
+consultadd_injected = 0
+
+# --- Distribution Logic ---
+def should_include_consultadd():
+    """
+    Determines whether to include Consultadd branding in the current blog.
+    
+    Logic:
+    - Maintains a ratio of CONSULTADD_RATIO blogs with Consultadd per TOTAL_IN_BATCH
+    - Resets counters after each batch is complete
+    - Returns True if Consultadd should be included, False otherwise
+    
+    Returns:
+        bool: True if should include Consultadd, False otherwise
+    """
+    global blog_counter, consultadd_injected
+    
+    # Reset counters after completing a batch
+    if blog_counter >= TOTAL_IN_BATCH:
+        print(f"\nBatch completed! Resetting counters.")
+        print(f"Previous batch stats: {consultadd_injected}/{TOTAL_IN_BATCH} blogs included Consultadd")
+        blog_counter = 0
+        consultadd_injected = 0
+    
+    # Increment blog counter for current blog
+    blog_counter += 1
+    
+    # Decide whether to include Consultadd based on ratio
+    if consultadd_injected < CONSULTADD_RATIO:
+        consultadd_injected += 1
+        print(f"Blog {blog_counter}: Including Consultadd ({consultadd_injected}/{CONSULTADD_RATIO} in current batch)")
+        return True
+    else:
+        remaining_in_batch = TOTAL_IN_BATCH - blog_counter + 1
+        print(f"Blog {blog_counter}: No Consultadd (quota met: {consultadd_injected}/{CONSULTADD_RATIO}, {remaining_in_batch} blogs left in batch)")
+        return False
+
+def reset_consultadd_counters():
+    """
+    Manually reset the Consultadd distribution counters.
+    Useful for testing or starting fresh.
+    """
+    global blog_counter, consultadd_injected
+    blog_counter = 0
+    consultadd_injected = 0
+    print("Consultadd distribution counters reset to 0.")
+
+def get_consultadd_status():
+    """
+    Get current status of Consultadd distribution.
+    
+    Returns:
+        dict: Current status including counters and remaining quota
+    """
+    global blog_counter, consultadd_injected
+    
+    remaining_consultadd = max(0, CONSULTADD_RATIO - consultadd_injected)
+    remaining_in_batch = max(0, TOTAL_IN_BATCH - blog_counter)
+    
+    return {
+        'current_blog_in_batch': blog_counter,
+        'consultadd_included_so_far': consultadd_injected,
+        'consultadd_quota': CONSULTADD_RATIO,
+        'total_batch_size': TOTAL_IN_BATCH,
+        'remaining_consultadd_slots': remaining_consultadd,
+        'remaining_blogs_in_batch': remaining_in_batch,
+        'batch_progress_percentage': (blog_counter / TOTAL_IN_BATCH) * 100 if TOTAL_IN_BATCH > 0 else 0
+    }
+
+def log_decision(blog_index, topic, included):
+    file_exists = os.path.isfile(LOG_FILE)
+    with open(LOG_FILE, mode="a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        if not file_exists:
+            writer.writerow(["Blog_Index", "Topic", "Consultadd_Included", "Timestamp"])
+        writer.writerow([blog_index, topic, "Yes" if included else "No", time.strftime("%Y-%m-%d %H:%M:%S")])
+
+# --- Blog Generation ---
+def generate_blogs(topics_data: List[Dict[str, Any]]):
+    """
+    Generate blogs from a list of topic data dictionaries.
+    Each dictionary should contain: keyword, url, title, description
+    """
+    generated_blogs = []
+    
+    for i, topic_data in enumerate(topics_data, start=1):
+        print(f"\n{'='*50}")
+        print(f"Processing Blog {i}/{len(topics_data)}")
+        print(f"{'='*50}")
+        
+        try:
+            blog_content = generate_blog_with_gemini(topic_data)
+            generated_blogs.append({
+                'index': i,
+                'keyword': topic_data.get('keyword', ''),
+                'content': blog_content,
+                'success': True
+            })
+            
+            # Add delay between requests to respect API limits
+            if i < len(topics_data):
+                print("Waiting 5 seconds before next generation...")
+                time.sleep(5)
+                
+        except Exception as e:
+            print(f"Failed to generate blog {i}: {str(e)}")
+            generated_blogs.append({
+                'index': i,
+                'keyword': topic_data.get('keyword', ''),
+                'content': f"Error: {str(e)}",
+                'success': False
+            })
+    
+    print(f"\n{'='*50}")
+    print("GENERATION COMPLETE")
+    print(f"{'='*50}")
+    print(f"Successfully generated: {sum(1 for blog in generated_blogs if blog['success'])}/{len(topics_data)} blogs")
+    print(f"Decisions logged to: {LOG_FILE}")
+    
+    return generated_blogs
+
+def save_blogs_to_files(generated_blogs: List[Dict], output_dir: str = "generated_blogs"):
+    """Save generated blogs to individual files."""
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    
+    for blog in generated_blogs:
+        if blog['success']:
+            filename = f"blog_{blog['index']}_{blog['keyword'].replace(' ', '_')[:30]}.md"
+            filepath = os.path.join(output_dir, filename)
+            
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(blog['content'])
+            
+            print(f"Saved: {filepath}")
+
+# --- Testing Functions ---
+def test_consultadd_distribution(num_tests: int = 20):
+    """
+    Test the Consultadd distribution logic to verify it works correctly.
+    
+    Args:
+        num_tests (int): Number of test iterations to run
+    """
+    print(f"Testing Consultadd distribution logic with {num_tests} iterations...")
+    print(f"Expected: {CONSULTADD_RATIO} Consultadd blogs per {TOTAL_IN_BATCH} total blogs\n")
+    
+    # Reset counters for clean test
+    reset_consultadd_counters()
+    
+    results = []
+    for i in range(num_tests):
+        include = should_include_consultadd()
+        results.append(include)
+    
+    # Analyze results
+    consultadd_count = sum(results)
+    total_batches = (num_tests // TOTAL_IN_BATCH)
+    expected_consultadd = total_batches * CONSULTADD_RATIO
+    
+    print(f"\nTest Results:")
+    print(f"Total iterations: {num_tests}")
+    print(f"Complete batches: {total_batches}")
+    print(f"Consultadd blogs generated: {consultadd_count}")
+    print(f"Expected Consultadd blogs: {expected_consultadd}")
+    print(f"Accuracy: {'✓ PASS' if consultadd_count == expected_consultadd or num_tests % TOTAL_IN_BATCH != 0 else '✗ FAIL'}")
+    
+    # Show batch-by-batch breakdown
+    if total_batches > 0:
+        print(f"\nBatch breakdown:")
+        for batch in range(total_batches):
+            start_idx = batch * TOTAL_IN_BATCH
+            end_idx = start_idx + TOTAL_IN_BATCH
+            batch_results = results[start_idx:end_idx]
+            batch_consultadd = sum(batch_results)
+            print(f"  Batch {batch + 1}: {batch_consultadd}/{TOTAL_IN_BATCH} with Consultadd")
+
+# --- Example Usage ---
+def main():
+    # Example topic data - replace with your actual data
+    example_topics = [
+        {
+            'keyword': 'AI automation for small business',
+            'url': 'https://example.com/ai-automation',
+            'title': 'AI Automation Solutions for Small Businesses',
+            'description': 'Comprehensive guide to implementing AI automation in small business operations'
+        },
+        {
+            'keyword': 'machine learning ROI',
+            'url': 'https://example.com/ml-roi',
+            'title': 'Calculating ROI from Machine Learning Investments',
+            'description': 'How to measure and maximize return on investment from ML projects'
+        }
+    ]
+    
+    # Check if API key is available
+    if not GEMINI_API_KEY:
+        print("Error: GEMINI_API_KEY not found in environment variables.")
+        print("Please add your Gemini API key to a .env file.")
+        return
+    
+    print("Starting blog generation process...")
+    generated_blogs = generate_blogs(example_topics)
+    
+    # Save blogs to files
+    save_blogs_to_files(generated_blogs)
+    
+    print("\nBlog generation completed!")
+
+if __name__ == "__main__":
+    # Uncomment to test the distribution logic
+    # test_consultadd_distribution(30)
+    
+    # Uncomment to check current status
+    # status = get_consultadd_status()
+    # print("Current Consultadd Status:", status)
+    
+    main()
