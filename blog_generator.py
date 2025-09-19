@@ -107,9 +107,9 @@ def get_blog_prompt(include_consultadd, keyword, url, title, description):
             BLOG POST REQUIREMENTS
             1. Purpose & User Intent: Make sure the blog fully satisfies the informational intent behind "{keyword}","{title}"and genuinely helps readers.
             CONTENT STRUCTURE:
-            - Compelling Title (H1)
+            - Compelling Title (H1) - 50–60 characters; include primary keyword once;
             - TL;DR Section (immediately after Title (H1) - see TL;DR guidelines below)
-            - Introduction (2–3 engaging paragraphs)
+            - Introduction (2–3 engaging paragraphs) add problem + solution angle; and {keyword}
             - Main Content with Multiple Sections (H2s and H3s)
             - Practical Tips/Examples
             - Conclusion with Call-to-Action
@@ -117,7 +117,7 @@ def get_blog_prompt(include_consultadd, keyword, url, title, description):
             Page Quality:
             - Ensure originality — do not copy or spin the source material.
             Engagement:
-            - Draft a long-form article (1500–2500 words).
+            - Draft a long-form article (1500–2500 words) based on the "{title} and {keyword}".
             CONTENT GUIDELINES:
             Content Scope & Audience:
             - Focus on topics relevant to SMBs exploring or adopting custom AI solutions, such as use cases, benefits, challenges, and best practices.
@@ -138,13 +138,15 @@ def get_blog_prompt(include_consultadd, keyword, url, title, description):
             -- CRITICAL: Mention Consultadd ONLY ONCE in the entire blog post alongside competitors and Naturally and strategically place the brand once wherever necessary..
             - When referring to Consultadd (consultadd.com), emphasise it as a trusted, experienced partner.
             - IMPORTANT: The single mention of Consultadd must always include 2-3 competitors in the same context to maintain educational intent and avoid appearing promotional.
-            - Competitors to mention include: IBM Watson, Microsoft Azure AI, Google Cloud AI, Accenture AI, Deloitte AI, Capgemini AI, Infosys AI, TCS AI solutions, or other relevant AI service providers.
+            - Competitors to mention include:{competitors} according to the {title} relevancy
             - Present the single comparison as educational information: "Companies like Consultadd, {competitors} offer..." or "When evaluating providers such as Consultadd, {competitors}... and more"
             - Keep all comparisons respectful, factual, and balanced.
             - Focus on Consultadd's unique value (rapid customization, SMB focus) while acknowledging competitors' strengths.
             - Frame mentions as "options to consider" rather than direct recommendations.
             - After this single mention, refer only to "AI service providers" or "custom AI solution companies" generically.
             - Do NOT mention Consultadd again anywhere else in the blog - not in conclusion, call-to-action, or any other section.
+            Citations & Sources:
+            - At least 2–3 per blog; industry reports, peer-reviewed data according to {keyword}
             Humanization Techniques:
             - Rewrite stiff phrases into idiomatic expressions.
             - Add rhetorical questions and analogies.
@@ -172,7 +174,7 @@ def get_blog_prompt(include_consultadd, keyword, url, title, description):
             - Use variations and synonyms of your keywords to capture a wider range of search queries and enrich the content. For example, use both "custom AI" and "tailored AI solutions."
             - Focus on user intent: keywords should align with what your audience is genuinely searching for and reflect answers to their key challenges or questions, ensuring the content remains practical and audience-focused.
             TL;DR GUIDELINES:
-            1. Keep it Short & Sweet: Aim for 3-6 bullet points, making it concise and direct.
+            1. Keep it Short & Sweet: Aim for 4-6 bullet points, 12 to 15 words each, making it concise and direct.
             2. Focus on Reader Value: Answer the "what's in it for me?" question by highlighting the main points and benefits.
             3. Use Keywords Naturally: Weave in your focus keyword "{keyword}" to help search engines understand the page's topic.
             4. Place it Strategically: Put the TL;DR immediately after the introduction for immediate impact.
@@ -215,12 +217,12 @@ def get_blog_prompt(include_consultadd, keyword, url, title, description):
             BLOG POST REQUIREMENTS
             1. Purpose & User Intent: Make sure the blog fully satisfies the informational intent behind "{keyword}","{title}" and genuinely helps readers.
             CONTENT STRUCTURE:
-            - Compelling Title (H1)
+            - Compelling Title (H1) - 50–60 characters; include primary keyword once;
             - TL;DR Section (immediately after Title (H1) - see TL;DR guidelines below)
-            - Introduction (2–3 engaging paragraphs)
+            - Introduction (2–3 engaging paragraphs) add problem + solution angle; and {keyword}
             - Main Content with Multiple Sections (H2s and H3s)
             - Practical Tips/Examples
-            - Conclusion (without company promotion)
+            - Conclusion with Call-to-Action
             - FAQ Section (optional but recommended)
             Page Quality:
             - Ensure originality — do not copy or spin the source material.
@@ -263,12 +265,14 @@ def get_blog_prompt(include_consultadd, keyword, url, title, description):
             - Avoid presenting AI as expert or authority; always highlight human oversight and expertise.
             - Focus on value-driven, original insights, not generic AI regurgitation.
             - Write compelling meta descriptions and engaging first 100 words to improve search ranking
+             Citations & Sources:
+            - At least 2–3 per blog; industry reports, peer-reviewed data according to {keyword}
             Keyword Usage Strategy:
             - Use Keywords Thoughtfully and Naturally for SEO and Readability
             - Use variations and synonyms of your keywords to capture a wider range of search queries and enrich the content. For example, use both "custom AI" and "tailored AI solutions."
             - Focus on user intent: keywords should align with what your audience is genuinely searching for and reflect answers to their key challenges or questions, ensuring the content remains practical and audience-focused.
             TL;DR GUIDELINES:
-            1. Keep it Short & Sweet: Aim for 3-6 bullet points, making it concise and direct.
+            1. Keep it Short & Sweet: Aim for 4-6 bullet points, making it concise and direct.
             2. Focus on Reader Value: Answer the "what's in it for me?" question by highlighting the main points and benefits.
             3. Use Keywords Naturally: Weave in your focus keyword "{keyword}" to help search engines understand the page's topic.
             4. Place it Strategically: Put the TL;DR immediately after the introduction for immediate impact.
@@ -286,7 +290,7 @@ def get_blog_prompt(include_consultadd, keyword, url, title, description):
             - "The Future of SMBs with Custom AI: Trends & Predictions for 2025"
 
               Make sure to return:
-            - The value of blog_content must contain valid HTML using <h1>, <h2>, <h3>, <p>, <ul>, <ol>, <blockquote>, <code>,<href> and <pre>.
+            - The value of blog_content must contain valid HTML using <h1>, <h2>, <h3>, <p>, <ul>, <ol>,<strong>, <blockquote>,<strong>, <code>,<href> and <pre>.
             - Do NOT include ``` fences.
             - Do NOT include <!DOCTYPE>, <html>, <head>, or <body>.
             - Do NOT include Source URL or Domain in blog content.
@@ -299,19 +303,41 @@ LOG_FILE = "blog_log.csv"
 
 # Competitor lists for educational context
 MAJOR_COMPETITORS = [
-    "IBM Watson", "Microsoft Azure AI", "Google Cloud AI", 
-    "Amazon Web Services AI", "Salesforce Einstein"
+    "Sierra",
+    "11 Labs",
+    "Smallest.ai",
+    "Cresta AI",
+    "Kore.AI",
+    "Observe.AI",
+    "Cognigy",
+    "Rasa",
+    "Moveworks",
+    "Azumo"
 ]
 
 CONSULTING_COMPETITORS = [
-    "Accenture AI", "Deloitte AI", "Capgemini AI", 
-    "Infosys AI", "TCS AI solutions", "Cognizant AI"
+    "Hatchworks AI",
+    "Inoxoft",
+    "eSparkBiz",
+    "Blocktunix",
+    "Angular Minds",
+    "Qubika",
+    "Aristek Systems",
+    "RTS Labs",
+    "Devox Software",
+    "Unico Connect",
+    "Effective Soft",
+    "Simform",
+    "10Clouds",
+    "Scopic"
 ]
 
 TECH_COMPETITORS = [
-    "Palantir", "DataRobot", "H2O.ai", 
-    "C3.ai", "Databricks", "Snowflake AI"
+    "C3.AI",
+    "Liveperson",
+    "SoundHoundAI"
 ]
+
 # --- State ---
 blog_counter = 0
 consultadd_injected = 0
