@@ -160,6 +160,10 @@
     <div class="header">
         <h1>Generated Blog Post</h1>
         <p>Generated on {{ blog_data.generated_at }}</p>
+        <p id="wordCount" style="margin-bottom: 15px; font-weight: 600; color: #ffffff;">
+         Word Count: 0
+        </p>
+
     </div>
     
     <div class="container">
@@ -198,6 +202,13 @@
                 alert('Blog content copied to clipboard!');
             });
         }
+        function updateWordCount() {
+        const blogContent = document.getElementById('blogContent').innerText || "";
+        const words = blogContent.trim().split(/\s+/).filter(Boolean); // split by whitespace
+        document.getElementById('wordCount').innerText = `Word Count: ${words.length}`;
+    }
+
+    updateWordCount();
     </script>
 </body>
 </html>

@@ -13,7 +13,7 @@ def save_results_to_file(results: List[Dict], filename: str = "seo_research_resu
     except Exception as e:
         print(f"✗ Error saving results: {e}")
 
-def main(seed_keyword: str, num_results: int = 10):
+def main(seed_keyword: str, num_results: int = 10, search_type: str = "competitor") -> List[Dict]:
     """Main function to research a single keyword and extract meta data."""
     print(f"\nStarting SEO research for: '{seed_keyword}'")
     print("=" * 60)
@@ -23,7 +23,7 @@ def main(seed_keyword: str, num_results: int = 10):
     total_urls = 0
     
     print(f"\nStep 1: Getting search results for '{seed_keyword}'...")
-    urls = get_serp_results(seed_keyword, num_results=num_results)
+    urls = get_serp_results(seed_keyword, num_results=num_results, search_type=search_type)
     
     if not urls:
         print(f"  ✗ No URLs found for '{seed_keyword}'")
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     keyword="Python programming"
     try:
         print("🔧 SEO Research Tool Starting...")
-        results = main(keyword, num_results=5)
+        results = main(keyword, num_results=5, search_type="competitor")
         print(f"\n Process completed! Found {len(results)} total results.")
     except KeyboardInterrupt:
         print("\n Process interrupted by user.")

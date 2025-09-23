@@ -6,7 +6,10 @@ import os
 
 load_dotenv()
 
-GOOGLE_CX = os.getenv("GOOGLE_CX")
+#use any one according to toggle
+GOOGLE_CX_COMPETITORS = os.getenv("GOOGLE_CX_COMPETITORS")
+GOOGLE_CX_PUBLIC = os.getenv("GOOGLE_CX_PUBLIC")
+
 GOOGLE_SERP = os.getenv("GOOGLE_SERP")
 
 def get_domain(url: str) -> str:
@@ -20,14 +23,15 @@ def get_domain(url: str) -> str:
     except:
         return url
 
-def get_serp_results(query: str, num_results: int = 10) -> List[str]:
+def get_serp_results(query: str, num_results: int = 10, search_type: str = "competitor") -> List[str]:
     """
     Get search results using Google Custom Search JSON API with unique domain filtering.
     You need a Google API key + Custom Search Engine ID (cx).
     """
     print(f"  Searching Google for: '{query}'")
     api_key = GOOGLE_SERP   
-    cx = GOOGLE_CX         
+    cx = GOOGLE_CX_COMPETITORS if search_type == "competitor" else GOOGLE_CX_PUBLIC  
+    print(f"  Using search type: '{search_type}' with cx: '{cx}'")   
 
     try:
         service = build("customsearch", "v1", developerKey=api_key)

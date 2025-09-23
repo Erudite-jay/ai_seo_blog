@@ -39,6 +39,7 @@ def start_research():
     data = request.get_json()
     keyword = data.get('keyword', '').strip()
     num_results = int(data.get('num_results', 10))
+    search_type = data.get('search_type')
     
     if not keyword:
         return jsonify({'error': 'Keyword is required'}), 400
@@ -55,21 +56,20 @@ def start_research():
     # Start research in background thread
     thread = threading.Thread(
         target=run_research, 
-        args=(keyword, num_results)
+        args=(keyword, num_results,search_type)
     )
     thread.daemon = True
     thread.start()
     
     return jsonify({'message': 'Research started', 'status': 'running'})
 
-def run_research(keyword, num_results):
+def run_research(keyword, num_results, search_type):
     """Run SEO research in background thread."""
     global research_status
     
     try:
         research_status['progress'] = f'Researching keyword: {keyword}...'
-        results = main(keyword, num_results)
-        
+        results = main(keyword, num_results, search_type)
         research_status['results'] = results
         research_status['completed'] = True
         research_status['progress'] = f'Completed! Found {len(results)} results.'
