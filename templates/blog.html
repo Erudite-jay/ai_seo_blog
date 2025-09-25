@@ -1,43 +1,48 @@
 <!-- templates/blog.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generated Blog Post</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             background: #f8f9fa;
         }
-        
+
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 30px 0;
             text-align: center;
         }
-        
+
         .container {
             max-width: 800px;
             margin: 0 auto;
             padding: 30px 20px;
         }
-        
+
         .controls {
             background: white;
             padding: 20px;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             margin-bottom: 30px;
             display: flex;
-            gap: 15px;
+            gap: 20px;
             flex-wrap: wrap;
         }
-        
+
         .btn {
             padding: 12px 25px;
             border: none;
@@ -46,48 +51,126 @@
             font-weight: 600;
             transition: all 0.3s ease;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            font-size: 14px;
+            min-width: 160px;
         }
-        
+
         .btn-primary {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
         }
-        
+
         .btn-success {
             background: linear-gradient(135deg, #28a745, #20c997);
             color: white;
         }
-        
-        .btn:hover {
+
+        .btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
-        
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         .source-info {
             background: white;
             padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             margin-bottom: 30px;
             border-left: 5px solid #667eea;
         }
-        
+
+        .seo-suggestions {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            border-left: 5px solid #316ce3;
+        }
+
+        .button-container {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        #seoList {
+            margin-bottom: 15px;
+            min-height: 50px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .success-message {
+            color: #28a745;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
         .blog-content {
             background: white;
             padding: 40px;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             font-size: 16px;
             line-height: 1.7;
         }
-        
+
         .blog-content h1 {
             color: #333;
             margin-bottom: 20px;
             font-size: 2.2em;
         }
-        
+
         .blog-content h2 {
             color: #444;
             margin: 30px 0 15px 0;
@@ -95,27 +178,28 @@
             border-bottom: 2px solid #f0f0f0;
             padding-bottom: 10px;
         }
-        
+
         .blog-content h3 {
             color: #555;
             margin: 25px 0 10px 0;
             font-size: 1.3em;
         }
-        
+
         .blog-content p {
             margin-bottom: 15px;
             color: #333;
         }
-        
-        .blog-content ul, .blog-content ol {
+
+        .blog-content ul,
+        .blog-content ol {
             margin: 15px 0;
             padding-left: 30px;
         }
-        
+
         .blog-content li {
             margin-bottom: 8px;
         }
-        
+
         .blog-content blockquote {
             border-left: 4px solid #667eea;
             padding-left: 20px;
@@ -125,14 +209,14 @@
             padding: 15px 20px;
             border-radius: 0 8px 8px 0;
         }
-        
+
         .blog-content code {
             background: #f4f4f4;
             padding: 2px 6px;
             border-radius: 4px;
             font-family: 'Courier New', monospace;
         }
-        
+
         .blog-content pre {
             background: #f4f4f4;
             padding: 15px;
@@ -140,39 +224,48 @@
             overflow-x: auto;
             margin: 15px 0;
         }
-        
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px 15px;
             }
-            
+
+            .seo-suggestions,
             .blog-content {
                 padding: 25px 20px;
             }
-            
+
             .controls {
                 flex-direction: column;
+            }
+
+            .button-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn {
+                min-width: 200px;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <h1>Generated Blog Post</h1>
         <p>Generated on {{ blog_data.generated_at }}</p>
         <p id="wordCount" style="margin-bottom: 15px; font-weight: 600; color: #ffffff;">
-         Word Count: 0
+            Word Count: 0
         </p>
-
     </div>
-    
+
     <div class="container">
         <div class="controls">
             <a href="/" class="btn btn-primary">New Search</a>
-            <a href="/results" class="btn btn-primary">Back to Results</a>
             <button class="btn btn-success" onclick="copyBlog()">Copy Blog Content</button>
         </div>
-        
+
         <div class="source-info">
             <h3>Source Information</h3>
             <p><strong>Original URL:</strong> {{ blog_data.source_result.url }}</p>
@@ -180,21 +273,43 @@
             <p><strong>Keyword:</strong> {{ blog_data.source_result.keyword }}</p>
             <p><strong>Description:</strong> {{ blog_data.source_result.description}}</p>
         </div>
-        
+
+        <div class="seo-suggestions">
+            <h3>SEO Suggestions</h3>
+            <div id="seoList">
+                {% if blog_data.seo_data %}
+                    {{ blog_data.seo_data | replace("```html","") | replace("```","") | safe }}
+                {% else %}
+                    <p>Click the button below to generate SEO suggestions for your content.</p>
+                {% endif %}
+            </div>
+            
+            <div class="button-container">
+                <button id="generateSeoBtn" class="btn btn-primary" onclick="generateSEO()">
+                    <span class="btn-text">
+                        {% if blog_data.seo_data %}Generate More SEO Suggestions{% else %}Generate SEO Suggestions{% endif %}
+                    </span>
+                    <div class="spinner" style="display: none;"></div>
+                </button>
+                <div id="statusMessage" style="display: none;"></div>
+            </div>
+        </div>
+
         <!-- Direct HTML injection -->
         <div class="blog-content" id="blogContent">
             {{ blog_data.blog_content | replace("```html","") | replace("```","") | safe }}
         </div>
     </div>
-    
+
     <script>
         function copyBlog() {
-            const blogText = document.getElementById('blogContent').innerText;
-            navigator.clipboard.writeText(blogText).then(() => {
+            const blogContent = document.getElementById('blogContent').innerText;
+            
+            navigator.clipboard.writeText(blogContent).then(() => {
                 alert('Blog content copied to clipboard!');
             }).catch(() => {
                 const textArea = document.createElement('textarea');
-                textArea.value = blogText;
+                textArea.value = blogContent;
                 document.body.appendChild(textArea);
                 textArea.select();
                 document.execCommand('copy');
@@ -202,13 +317,99 @@
                 alert('Blog content copied to clipboard!');
             });
         }
-        function updateWordCount() {
-        const blogContent = document.getElementById('blogContent').innerText || "";
-        const words = blogContent.trim().split(/\s+/).filter(Boolean); // split by whitespace
-        document.getElementById('wordCount').innerText = `Word Count: ${words.length}`;
-    }
 
-    updateWordCount();
+        function updateWordCount() {
+            const blogContent = document.getElementById('blogContent').innerText || "";
+            const words = blogContent.trim().split(/\s+/).filter(Boolean);
+            document.getElementById('wordCount').innerText = `Word Count: ${words.length}`;
+        }
+
+        function generateSEO() {
+            const blogContent = document.getElementById('blogContent').innerText || "";
+            const seoBtn = document.getElementById('generateSeoBtn');
+            const btnText = seoBtn.querySelector('.btn-text');
+            const spinner = seoBtn.querySelector('.spinner');
+            const statusMessage = document.getElementById('statusMessage');
+            const seoList = document.getElementById('seoList');
+            
+            // Reset any previous status messages
+            statusMessage.style.display = 'none';
+            statusMessage.className = '';
+            
+            // Update button state to loading
+            seoBtn.disabled = true;
+            btnText.textContent = 'Generating...';
+            spinner.style.display = 'block';
+
+            fetch('/generate_seo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ content: blogContent })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.seo_data) {
+                    // Success - update content with fade-in animation
+                    seoList.innerHTML = data.seo_data;
+                    seoList.classList.add('fade-in');
+                    
+                    // Show success message
+                    statusMessage.innerHTML = 'SEO suggestions generated successfully!';
+                    statusMessage.className = 'success-message';
+                    statusMessage.style.display = 'flex';
+                    
+                    // Update button text to "regenerate"
+                    btnText.textContent = 'Generate More Suggestions';
+                    
+                    // Hide success message after 3 seconds
+                    setTimeout(() => {
+                        statusMessage.style.display = 'none';
+                        seoList.classList.remove('fade-in');
+                    }, 3000);
+                } else {
+                    throw new Error('No SEO data received');
+                }
+            })
+            .catch(error => {
+                console.error('Error generating SEO suggestions:', error);
+                
+                // Show error message
+                statusMessage.innerHTML = 'Failed to generate suggestions. Please try again.';
+                statusMessage.className = 'error-message';
+                statusMessage.style.display = 'flex';
+                
+                // Keep original content if there was an error
+                if (!seoList.innerHTML || seoList.innerHTML.includes('Click the button below')) {
+                    seoList.innerHTML = '<p>Unable to generate SEO suggestions. Please try again.</p>';
+                }
+                
+                // Hide error message after 5 seconds
+                setTimeout(() => {
+                    statusMessage.style.display = 'none';
+                }, 5000);
+            })
+            .finally(() => {
+                // Always reset button state
+                seoBtn.disabled = false;
+                spinner.style.display = 'none';
+                
+                // If button text is still "Generating...", reset it
+                if (btnText.textContent === 'Generating...') {
+                    btnText.textContent = 'Generate SEO Suggestions';
+                }
+            });
+        }
+
+        // Initialize word count on page load
+        updateWordCount();
     </script>
 </body>
+
 </html>

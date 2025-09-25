@@ -1,25 +1,14 @@
 import google.generativeai as genai
 import time
 from typing import Dict, Any, List
-from dotenv import load_dotenv
 import os
 import csv
 
-load_dotenv()
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-
-def configure_gemini(api_key: str):
-    """Configure Gemini API with the provided key."""
-    genai.configure(api_key=api_key)
-    return genai.GenerativeModel('gemini-2.0-flash')
-
-def generate_blog_with_gemini(selected_result: Dict[Any, Any]) -> str:
+def generate_blog_with_gemini(selected_result: Dict[Any, Any], model) -> str:
     """Generate a comprehensive blog post using Gemini API based on selected research result."""
 
     try:
-        # Configure Gemini
-        model = configure_gemini(GEMINI_API_KEY)
         
         # Extract information from selected result
         url = selected_result.get('url', '')

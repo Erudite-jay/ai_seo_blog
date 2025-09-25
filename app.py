@@ -5,15 +5,27 @@ import threading
 import time
 import sys
 import os
-import dotenv
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
+from dotenv import load_dotenv
+from seo_generator import generate_seo_suggestions
+import google.generativeai as genai
 from seo_research import main
 from blog_generator import generate_blog_with_gemini
 
+
+load_dotenv()
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
 FLASK_KEY=os.getenv('FLASK_KEY')
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 app = Flask(__name__)
 app.secret_key = FLASK_KEY
+
+
+#gemini configuration
+genai.configure(api_key=GEMINI_API_KEY)
+model = genai.GenerativeModel("gemini-2.0-flash")
+
 
 # Global variables to track research progress
 research_status = {
@@ -121,7 +133,9 @@ def generate_blog():
             return jsonify({'error': 'Missing selected result or API key'}), 400
         
         # Generate blog using Gemini
-        blog_content = generate_blog_with_gemini(selected_result)
+        blog_content = generate_blog_with_gemini(selected_result, model)
+        # Generate SEO suggestions
+        seo_data= generate_seo_suggestions(blog_content, model)
         
         # Save generated blog
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -132,7 +146,8 @@ def generate_blog():
             json.dump({
                 'source_result': selected_result,
                 'blog_content': blog_content,
-                'generated_at': timestamp
+                'generated_at': timestamp,
+                'seo_data': seo_data
             }, f, indent=2)
         
         return jsonify({
@@ -143,6 +158,21 @@ def generate_blog():
         
     except Exception as e:
         return jsonify({'error': f'Blog generation failed: {str(e)}'}), 500
+    
+@app.route("/generate_seo", methods=["POST"])
+def generate_seo():
+    """Generate additional SEO suggestions for existing blog content."""
+    try:
+        blog_content = request.json.get("content", "")
+        
+        if not blog_content:
+            return jsonify({"error": "No content provided"}), 400
+            
+        seo_data = generate_seo_suggestions(blog_content, model, num_options=3)
+        return jsonify({"seo_data": seo_data})
+        
+    except Exception as e:
+        return jsonify({"error": f"Failed to generate SEO suggestions: {str(e)}"}), 500
 
 @app.route('/blog/<filename>')
 def view_blog(filename):
