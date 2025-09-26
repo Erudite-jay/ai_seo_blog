@@ -114,12 +114,11 @@ def get_blog_prompt(include_consultadd, keyword, url, title, description):
             - Page Title: {title}
             - Page Description: {description}
 
-            {title_diversity_section}
 
             BLOG POST REQUIREMENTS
             1. Purpose & User Intent: Make sure the blog fully satisfies the informational intent behind "{keyword}","{title}"and genuinely helps readers.
             CONTENT STRUCTURE:
-            - Compelling Title (H1) - 50–60 characters; include primary keyword once.AVOID "unlock", "transform", "ultimate" type words
+            - Compelling Title (H1) - 50–60 characters; include primary keyword once.AVOID "unlock", "transform", "ultimate" type words and follow {title_diversity_section}
             - TL;DR Section (immediately after Title (H1) - see TL;DR guidelines below)
             - Introduction (2–3 engaging paragraphs) add problem + solution angle; and {keyword}
             - Main Content with Multiple Sections (H2s and H3s)
@@ -236,12 +235,11 @@ def get_blog_prompt(include_consultadd, keyword, url, title, description):
             - Page Title: {title}
             - Page Description: {description}
 
-            {title_diversity_section}
 
             BLOG POST REQUIREMENTS
             1. Purpose & User Intent: Make sure the blog fully satisfies the informational intent behind "{keyword}","{title}" and genuinely helps readers.
             CONTENT STRUCTURE:
-            - Compelling Title (H1) - 50–60 characters; include primary keyword once.AVOID "unlock", "transform", "ultimate" type words
+            - Compelling Title (H1) - 50–60 characters; include primary keyword once.AVOID "unlock", "transform", "ultimate" type words and and follow {title_diversity_section}
             - TL;DR Section (immediately after Title (H1) - see TL;DR guidelines below)
             - Introduction (2–3 engaging paragraphs) add problem + solution angle; and {keyword}
             - Main Content with Multiple Sections (H2s and H3s)
