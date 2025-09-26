@@ -78,6 +78,26 @@ def get_blog_prompt(include_consultadd, keyword, url, title, description):
     # Get competitor context for educational framing
     competitors = get_competitor_context(2) if include_consultadd else ""
     
+    # Add title diversity guidelines
+    title_diversity_section = """
+    TITLE CREATION GUIDELINES:
+    - AVOID overused words like "Unlock", "Transform", "Revolutionize", "Ultimate", "Complete Guide"
+    - AVOID generic patterns like "The Power of...", "Everything You Need to Know About..."
+    - USE specific, actionable titles that promise concrete value
+    - VARY your title formats across these styles:
+      * Question-based: "How Can SMBs Actually Benefit from Custom AI?"
+      * Number-based: "5 Ways AI Reduces Operational Costs "
+      * Problem-solution: "AI Adoption: Overcoming the Top 3 Implementation Barriers"
+      * Benefit-focused: "Custom AI Solutions: Faster Decision-Making for Growing Businesses"
+      * Case study: "Local Retailer Increases Sales 40% with Tailored AI Tools"
+      * Comparison: "Custom vs Off-the-Shelf AI: What Works Best"
+      * Action-oriented: "Building Your First AI Workflow: A Step-by-Step Guide"
+      * Trend/timing: "Why 2025 Is the Right Time for AI Investment"
+    - FOCUS on specific outcomes, timeframes, or unique angles rather than vague promises
+    - TEST different title styles: avoid using the same format repeatedly
+    """
+
+    
     if include_consultadd:
         return f"""
             You are an expert content creator tasked with generating humanised, engaging blog content for Consultadd,
@@ -93,10 +113,13 @@ def get_blog_prompt(include_consultadd, keyword, url, title, description):
             - Source URL: {url}
             - Page Title: {title}
             - Page Description: {description}
+
+            {title_diversity_section}
+
             BLOG POST REQUIREMENTS
             1. Purpose & User Intent: Make sure the blog fully satisfies the informational intent behind "{keyword}","{title}"and genuinely helps readers.
             CONTENT STRUCTURE:
-            - Compelling Title (H1) - 50–60 characters; include primary keyword once;
+            - Compelling Title (H1) - 50–60 characters; include primary keyword once.AVOID "unlock", "transform", "ultimate" type words
             - TL;DR Section (immediately after Title (H1) - see TL;DR guidelines below)
             - Introduction (2–3 engaging paragraphs) add problem + solution angle; and {keyword}
             - Main Content with Multiple Sections (H2s and H3s)
@@ -171,6 +194,15 @@ def get_blog_prompt(include_consultadd, keyword, url, title, description):
             6. Format Options: Use either bullet points or a short paragraph format.
             7. No Company Mentions: Keep TL;DR generic and educational - do not mention Consultadd or competitors here.
             
+            DIVERSE TITLE EXAMPLES (use these patterns, not exact phrases):
+            - "How SMBs Cut Costs 30% with Custom AI Implementation"
+            - "AI for Small Business: 3 Critical Factors Before You Start"
+            - "Why Most SMBs Choose Custom Over Off-the-Shelf AI Solutions"
+            - "Building AI Workflows: A Practical Guide for Growing Businesses"
+            - "SMB Success Story: From Manual Processes to AI-Driven Growth"
+            - "Custom AI Investment: What 500 Small Businesses Learned in 2024"
+            - "Beyond Chatbots: AI Applications That Actually Move the Needle for SMBs"
+            - "AI Implementation Timeline: What SMBs Can Realistically Expect"
 
             EXAMPLES:
             - "Why Tailored AI, Not Off-the-Shelf, Matters for SMBs"
@@ -203,10 +235,13 @@ def get_blog_prompt(include_consultadd, keyword, url, title, description):
             - Source URL: {url}
             - Page Title: {title}
             - Page Description: {description}
+
+            {title_diversity_section}
+
             BLOG POST REQUIREMENTS
             1. Purpose & User Intent: Make sure the blog fully satisfies the informational intent behind "{keyword}","{title}" and genuinely helps readers.
             CONTENT STRUCTURE:
-            - Compelling Title (H1) - 50–60 characters; include primary keyword once;
+            - Compelling Title (H1) - 50–60 characters; include primary keyword once.AVOID "unlock", "transform", "ultimate" type words
             - TL;DR Section (immediately after Title (H1) - see TL;DR guidelines below)
             - Introduction (2–3 engaging paragraphs) add problem + solution angle; and {keyword}
             - Main Content with Multiple Sections (H2s and H3s)
@@ -268,7 +303,6 @@ def get_blog_prompt(include_consultadd, keyword, url, title, description):
             5. Write it Last Conceptually: Ensure your TL;DR accurately reflects the essence of your content.
             6. Format Options: Use either bullet points or a short paragraph format.
             7. No Company Mentions: Keep TL;DR generic and educational - do not mention Consultadd or competitors here.
-            
 
             EXAMPLES:
             - "Why Tailored AI, Not Off-the-Shelf, Matters for SMBs"
